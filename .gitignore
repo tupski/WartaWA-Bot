@@ -1,4 +1,20 @@
+# Dependencies
 node_modules/
+
+# Environment variables
 *.env
+
+# Logs
 *.log
+
+# Database
 *.sql
+
+# Generated files
+start-all.bat
+start-backend.bat
+start-frontend.bat
+
+# Lock files
+backend/package-lock.json
+frontend/package-lock.json
