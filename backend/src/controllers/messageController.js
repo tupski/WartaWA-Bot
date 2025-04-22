@@ -4,7 +4,12 @@ const {
     getClientStatus,
     getQRCode,
     getMessageHistory,
-    resetClient
+    resetClient,
+    getNumberInfo,
+    getGroups,
+    getGroupInfo,
+    getSettings,
+    updateSettings
 } = require('../services/whatsappService');
 
 // Initialize WhatsApp client
@@ -29,7 +34,7 @@ const initialize = async (_req, res) => {
 // Send a message
 const send = async (req, res) => {
     try {
-        const { number, message } = req.body;
+        const { number, message, quotedMessageId } = req.body;
 
         if (!number || !message) {
             return res.status(400).json({
@@ -38,7 +43,7 @@ const send = async (req, res) => {
             });
         }
 
-        const result = await sendMessage(number, message);
+        const result = await sendMessage(number, message, quotedMessageId);
 
         res.status(200).json({
             status: 'success',
@@ -143,11 +148,140 @@ const reset = async (_req, res) => {
     }
 };
 
+// Get number info
+const getContactInfo = async (req, res) => {
+    try {
+        const { number } = req.params;
+
+        if (!number) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'Phone number is required'
+            });
+        }
+
+        const info = await getNumberInfo(number);
+
+        res.status(200).json({
+            status: 'success',
+            data: info
+        });
+    } catch (error) {
+        console.error('Error getting number info:', error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to get number info',
+            error: error.message
+        });
+    }
+};
+
+// Get all groups
+const getAllGroups = async (_req, res) => {
+    try {
+        const groups = await getGroups();
+
+        res.status(200).json({
+            status: 'success',
+            data: {
+                groups
+            }
+        });
+    } catch (error) {
+        console.error('Error getting groups:', error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to get groups',
+            error: error.message
+        });
+    }
+};
+
+// Get group info
+const getGroup = async (req, res) => {
+    try {
+        const { groupId } = req.params;
+
+        if (!groupId) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'Group ID is required'
+            });
+        }
+
+        const info = await getGroupInfo(groupId);
+
+        res.status(200).json({
+            status: 'success',
+            data: info
+        });
+    } catch (error) {
+        console.error('Error getting group info:', error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to get group info',
+            error: error.message
+        });
+    }
+};
+
+// Get settings
+const getAppSettings = (_req, res) => {
+    try {
+        const appSettings = getSettings();
+
+        res.status(200).json({
+            status: 'success',
+            data: appSettings
+        });
+    } catch (error) {
+        console.error('Error getting settings:', error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to get settings',
+            error: error.message
+        });
+    }
+};
+
+// Update settings
+const updateAppSettings = (req, res) => {
+    try {
+        const newSettings = req.body;
+
+        if (!newSettings || Object.keys(newSettings).length === 0) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'No settings provided'
+            });
+        }
+
+        const updatedSettings = updateSettings(newSettings);
+
+        res.status(200).json({
+            status: 'success',
+            data: updatedSettings
+        });
+    } catch (error) {
+        console.error('Error updating settings:', error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to update settings',
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
     initialize,
     send,
     getStatus,
     getQR,
     getHistory,
-    reset
+    reset,
+    getContactInfo,
+    getAllGroups,
+    getGroup,
+    getAppSettings,
+    updateAppSettings
 };

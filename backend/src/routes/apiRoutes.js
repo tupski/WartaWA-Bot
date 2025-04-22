@@ -21,6 +21,13 @@ router.get("/whatsapp/qr", authenticateToken, messageController.getQR);
 router.get("/whatsapp/history", authenticateToken, messageController.getHistory);
 router.post("/whatsapp/reset", authenticateToken, messageController.reset);
 
+// New WhatsApp routes
+router.get("/whatsapp/number-info/:number", authenticateToken, messageController.getContactInfo);
+router.get("/whatsapp/groups", authenticateToken, messageController.getAllGroups);
+router.get("/whatsapp/groups/:groupId", authenticateToken, messageController.getGroup);
+router.get("/whatsapp/settings", authenticateToken, messageController.getAppSettings);
+router.post("/whatsapp/settings", authenticateToken, messageController.updateAppSettings);
+
 // For backward compatibility
 router.post("/login", authController.login);
 

@@ -5,6 +5,7 @@ let client;
 let qrCode = null;
 let connectionStatus = 'disconnected';
 let messageHistory = [];
+let settings = { timezone: 'Asia/Jakarta' }; // Default to GMT+7
 
 // Initialize WhatsApp client
 const initializeClient = () => {
@@ -70,7 +71,7 @@ const initializeClient = () => {
 };
 
 // Send a message
-const sendMessage = async (number, message) => {
+const sendMessage = async (number, message, quotedMessageId = null) => {
     if (!client) {
         throw new Error('WhatsApp client not initialized');
     }
@@ -82,7 +83,29 @@ const sendMessage = async (number, message) => {
     try {
         // Format the number
         const chatId = number.includes('@c.us') ? number : `${number}@c.us`;
-        const result = await client.sendMessage(chatId, message);
+
+        let result;
+        if (quotedMessageId) {
+            // Find the quoted message
+            const quotedMsg = messageHistory.find(msg => msg.id === quotedMessageId);
+            if (quotedMsg) {
+                // Get the message object from WhatsApp
+                const messages = await client.searchMessages(quotedMsg.body, { chatId });
+                if (messages && messages.length > 0) {
+                    // Reply to the message
+                    result = await client.sendMessage(chatId, message, { quotedMessageId: messages[0].id._serialized });
+                } else {
+                    // If message not found, send as normal message
+                    result = await client.sendMessage(chatId, message);
+                }
+            } else {
+                // If quoted message not found in history, send as normal message
+                result = await client.sendMessage(chatId, message);
+            }
+        } else {
+            // Send as normal message
+            result = await client.sendMessage(chatId, message);
+        }
 
         // Store message in history
         messageHistory.push({
@@ -123,6 +146,123 @@ const getMessageHistory = () => {
     return messageHistory;
 };
 
+// Get number info
+const getNumberInfo = async (number) => {
+    if (!client) {
+        throw new Error('WhatsApp client not initialized');
+    }
+
+    if (connectionStatus !== 'ready') {
+        throw new Error(`WhatsApp client not ready. Current status: ${connectionStatus}`);
+    }
+
+    try {
+        // Format the number
+        const chatId = number.includes('@c.us') ? number : `${number}@c.us`;
+
+        // Get contact info
+        const contact = await client.getContactById(chatId);
+
+        return {
+            id: contact.id.user,
+            name: contact.name || contact.pushname || 'Unknown',
+            number: contact.number,
+            isGroup: contact.isGroup,
+            isWAContact: contact.isWAContact,
+            profilePicUrl: await contact.getProfilePicUrl() || null
+        };
+    } catch (error) {
+        console.error('Error getting number info:', error);
+        throw error;
+    }
+};
+
+// Get all groups
+const getGroups = async () => {
+    if (!client) {
+        throw new Error('WhatsApp client not initialized');
+    }
+
+    if (connectionStatus !== 'ready') {
+        throw new Error(`WhatsApp client not ready. Current status: ${connectionStatus}`);
+    }
+
+    try {
+        // Get all chats
+        const chats = await client.getChats();
+
+        // Filter group chats
+        const groups = chats.filter(chat => chat.isGroup);
+
+        // Map to simplified objects
+        return groups.map(group => ({
+            id: group.id._serialized,
+            name: group.name,
+            participants: group.participants.length,
+            unreadCount: group.unreadCount
+        }));
+    } catch (error) {
+        console.error('Error getting groups:', error);
+        throw error;
+    }
+};
+
+// Get group info
+const getGroupInfo = async (groupId) => {
+    if (!client) {
+        throw new Error('WhatsApp client not initialized');
+    }
+
+    if (connectionStatus !== 'ready') {
+        throw new Error(`WhatsApp client not ready. Current status: ${connectionStatus}`);
+    }
+
+    try {
+        // Get the group chat
+        const chat = await client.getChatById(groupId);
+
+        if (!chat.isGroup) {
+            throw new Error('Not a group chat');
+        }
+
+        // Get participants with details
+        const participants = [];
+        for (const participant of chat.participants) {
+            const contact = await client.getContactById(participant.id._serialized);
+            participants.push({
+                id: contact.id.user,
+                name: contact.name || contact.pushname || 'Unknown',
+                number: contact.number,
+                isAdmin: participant.isAdmin || false
+            });
+        }
+
+        return {
+            id: chat.id._serialized,
+            name: chat.name,
+            description: chat.description || '',
+            owner: chat.owner ? chat.owner.user : null,
+            createdAt: chat.createdAt || null,
+            participants: participants,
+            unreadCount: chat.unreadCount
+        };
+    } catch (error) {
+        console.error('Error getting group info:', error);
+        throw error;
+    }
+};
+
+// Get settings
+const getSettings = () => {
+    return settings;
+};
+
+// Update settings
+const updateSettings = (newSettings) => {
+    settings = { ...settings, ...newSettings };
+    return settings;
+};
+
 // Reset client
 const resetClient = async () => {
     if (client) {
@@ -140,5 +280,10 @@ module.exports = {
     getClientStatus,
     getQRCode,
     getMessageHistory,
-    resetClient
+    resetClient,
+    getNumberInfo,
+    getGroups,
+    getGroupInfo,
+    getSettings,
+    updateSettings
 };
