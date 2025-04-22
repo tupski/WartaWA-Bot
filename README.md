@@ -1,7 +1,7 @@
-# WhatsApp Bot Web Application
+# WartaWA
 
 ## 📚 Description
-This project is a WhatsApp bot web application that integrates a Node.js/Express backend with a React.js frontend. The application allows users to send and receive WhatsApp messages through the WhatsApp Web service, providing an easy-to-use interface for managing WhatsApp communications.
+WartaWA is a powerful WhatsApp messaging platform that integrates a Node.js/Express backend with a React.js frontend. The application allows users to send and receive WhatsApp messages through the WhatsApp Web service, providing an easy-to-use interface for managing WhatsApp communications. "Warta" means "news" or "message" in Indonesian, making WartaWA the perfect name for your WhatsApp messaging solution.
 
 ---
 
@@ -55,7 +55,7 @@ This project is a WhatsApp bot web application that integrates a Node.js/Express
    cd wabot-backend-node
    ```
 
-2. Run the installer by double-clicking `Install-WhatsAppBot.bat`
+2. Run the installer by double-clicking `Install-WartaWA.bat`
 
 3. Choose your preferred installation method:
    - **Option 1**: Command-line installer (PowerShell)

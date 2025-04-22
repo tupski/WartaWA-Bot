@@ -1,5 +1,5 @@
-# WhatsApp Bot Web Application Installer
-# This script will install and configure the WhatsApp Bot Web Application
+# WartaWA Installer
+# This script will install and configure WartaWA
 
 # Function to display colored text
 function Write-ColorOutput($ForegroundColor) {
@@ -17,10 +17,10 @@ function Write-ColorOutput($ForegroundColor) {
 # Display welcome message
 Clear-Host
 Write-ColorOutput Green "=================================================="
-Write-ColorOutput Green "  WhatsApp Bot Web Application Installer"
+Write-ColorOutput Green "  WartaWA Installer"
 Write-ColorOutput Green "=================================================="
 Write-Output ""
-Write-Output "This installer will set up the WhatsApp Bot Web Application on your system."
+Write-Output "This installer will set up WartaWA on your system."
 Write-Output "You will need to provide database credentials and other configuration options."
 Write-Output ""
 Write-Output "Press any key to continue..."
@@ -112,13 +112,13 @@ try {
     # Create a temporary SQL file
     $tempSqlFile = [System.IO.Path]::GetTempFileName()
     "CREATE DATABASE IF NOT EXISTS $dbName CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" | Out-File -FilePath $tempSqlFile -Encoding ASCII
-    
+
     # Execute the SQL command
     mysql -u $dbUser -p"$dbPasswordPlain" -h $dbHost -P $dbPort -e "source $tempSqlFile"
-    
+
     # Remove the temporary file
     Remove-Item $tempSqlFile
-    
+
     Write-ColorOutput Green "Database '$dbName' created successfully."
 } catch {
     Write-ColorOutput Red "Failed to create database: $_"
@@ -212,7 +212,7 @@ npm start
 # Create start-all.bat
 @"
 @echo off
-echo Starting WhatsApp Bot Web Application...
+echo Starting WartaWA...
 echo.
 echo Starting backend server...
 start cmd /k "start-backend.bat"
@@ -221,7 +221,7 @@ echo Starting frontend server...
 timeout /t 5 /nobreak > nul
 start cmd /k "start-frontend.bat"
 echo.
-echo WhatsApp Bot Web Application is starting...
+echo WartaWA is starting...
 echo Backend will be available at: http://localhost:8005
 echo Frontend will be available at: http://localhost:3000
 echo.
@@ -234,7 +234,7 @@ Write-ColorOutput Green "Start scripts created successfully."
 # Installation complete
 Write-Output ""
 Write-ColorOutput Green "=================================================="
-Write-ColorOutput Green "  WhatsApp Bot Web Application Installation Complete!"
+Write-ColorOutput Green "  WartaWA Installation Complete!"
 Write-ColorOutput Green "=================================================="
 Write-Output ""
 Write-Output "To start the application:"

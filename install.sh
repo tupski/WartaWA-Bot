@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# WhatsApp Bot Web Application Installer for Linux
-# This script will install and configure the WhatsApp Bot Web Application
+# WartaWA Installer for Linux
+# This script will install and configure WartaWA
 
 # Function to display colored text
 print_color() {
@@ -16,10 +16,10 @@ print_color() {
 # Display welcome message
 clear
 print_color "green" "=================================================="
-print_color "green" "  WhatsApp Bot Web Application Installer for Linux"
+print_color "green" "  WartaWA Installer for Linux"
 print_color "green" "=================================================="
 echo ""
-echo "This installer will set up the WhatsApp Bot Web Application on your system."
+echo "This installer will set up WartaWA on your system."
 echo "You will need to provide database credentials and other configuration options."
 echo ""
 read -p "Press Enter to continue..."
@@ -187,7 +187,7 @@ chmod +x start-frontend.sh
 # Create start-all.sh
 cat > start-all.sh << EOL
 #!/bin/bash
-echo "Starting WhatsApp Bot Web Application..."
+echo "Starting WartaWA..."
 echo ""
 echo "Starting backend server..."
 gnome-terminal -- ./start-backend.sh || xterm -e ./start-backend.sh || konsole -e ./start-backend.sh || ./start-backend.sh &
@@ -196,7 +196,7 @@ echo "Starting frontend server..."
 sleep 5
 gnome-terminal -- ./start-frontend.sh || xterm -e ./start-frontend.sh || konsole -e ./start-frontend.sh || ./start-frontend.sh &
 echo ""
-echo "WhatsApp Bot Web Application is starting..."
+echo "WartaWA is starting..."
 echo "Backend will be available at: http://localhost:8005"
 echo "Frontend will be available at: http://localhost:3000"
 echo ""
@@ -210,7 +210,7 @@ print_color "green" "Start scripts created successfully."
 # Installation complete
 echo ""
 print_color "green" "=================================================="
-print_color "green" "  WhatsApp Bot Web Application Installation Complete!"
+print_color "green" "  WartaWA Installation Complete!"
 print_color "green" "=================================================="
 echo ""
 echo "To start the application:"

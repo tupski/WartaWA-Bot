@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatsApp Bot Web Application Installer</title>
+    <title>WartaWA Installer</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -111,8 +111,8 @@
 </head>
 <body>
     <div class="container">
-        <h1>WhatsApp Bot Web Application Installer</h1>
-        
+        <h1>WartaWA Installer</h1>
+
         <div class="step">
             <h2>Step 1: System Requirements</h2>
             <p>Before proceeding, please ensure you have the following installed:</p>
@@ -124,7 +124,7 @@
             <div id="requirements-status"></div>
             <button id="check-requirements">Check Requirements</button>
         </div>
-        
+
         <div class="step">
             <h2>Step 2: Database Configuration</h2>
             <div class="form-group">
@@ -148,7 +148,7 @@
                 <input type="text" id="db-name" placeholder="wabot" value="wabot">
             </div>
         </div>
-        
+
         <div class="step">
             <h2>Step 3: Application Configuration</h2>
             <div class="form-group">
@@ -164,16 +164,16 @@
                 <input type="text" id="frontend-url" placeholder="http://localhost:3000" value="http://localhost:3000">
             </div>
         </div>
-        
+
         <button id="install-button">Install WhatsApp Bot</button>
-        
+
         <div class="progress">
             <div class="progress-bar">
                 <span class="progress-bar-fill" id="progress-fill"></span>
             </div>
             <div class="progress-status" id="progress-status">Preparing installation...</div>
         </div>
-        
+
         <div class="status" id="status-message"></div>
     </div>
 
@@ -186,7 +186,7 @@
             const progressSection = document.querySelector('.progress');
             const progressFill = document.getElementById('progress-fill');
             const progressStatus = document.getElementById('progress-status');
-            
+
             // Check requirements button click
             checkRequirementsBtn.addEventListener('click', function() {
                 // This would normally check for Node.js, npm, and MySQL
@@ -200,7 +200,7 @@
                     </div>
                 `;
             });
-            
+
             // Install button click
             installBtn.addEventListener('click', function() {
                 // Get form values
@@ -212,7 +212,7 @@
                 const jwtSecret = document.getElementById('jwt-secret').value || generateRandomString(32);
                 const backendPort = document.getElementById('backend-port').value || '8005';
                 const frontendUrl = document.getElementById('frontend-url').value || 'http://localhost:3000';
-                
+
                 // Validate MySQL password
                 if (!dbPassword) {
                     statusMessage.textContent = 'MySQL password is required!';
@@ -220,16 +220,16 @@
                     statusMessage.style.display = 'block';
                     return;
                 }
-                
+
                 // Show progress
                 progressSection.style.display = 'block';
                 statusMessage.style.display = 'none';
                 installBtn.disabled = true;
-                
+
                 // Simulate installation process
                 simulateInstallation(dbUser, dbPassword, dbHost, dbPort, dbName, jwtSecret, backendPort, frontendUrl);
             });
-            
+
             // Function to simulate installation process
             function simulateInstallation(dbUser, dbPassword, dbHost, dbPort, dbName, jwtSecret, backendPort, frontendUrl) {
                 const steps = [
@@ -241,23 +241,23 @@
                     { progress: 90, message: "Creating start scripts..." },
                     { progress: 100, message: "Installation complete!" }
                 ];
-                
+
                 let currentStep = 0;
-                
+
                 // Process each step with a delay to simulate work
                 function processStep() {
                     if (currentStep < steps.length) {
                         const step = steps[currentStep];
                         progressFill.style.width = step.progress + '%';
                         progressStatus.textContent = step.message;
-                        
+
                         currentStep++;
                         setTimeout(processStep, 1500); // 1.5 seconds per step
                     } else {
                         // Installation complete
                         statusMessage.innerHTML = `
                             <h3>Installation Complete!</h3>
-                            <p>WhatsApp Bot Web Application has been successfully installed.</p>
+                            <p>WartaWA has been successfully installed.</p>
                             <p><strong>To start the application:</strong></p>
                             <ol>
                                 <li>Run <code>start-all.bat</code> to start both backend and frontend servers</li>
@@ -273,7 +273,7 @@
                         `;
                         statusMessage.className = 'status success';
                         statusMessage.style.display = 'block';
-                        
+
                         // Create a download link for the configuration
                         const configContent = `
 # WhatsApp Bot Web Application Configuration
@@ -297,7 +297,7 @@ FRONTEND_URL=${frontendUrl}
 # WhatsApp Configuration
 WHATSAPP_SESSION_PATH=./whatsapp-sessions
 `;
-                        
+
                         // Create a download link for the configuration
                         const blob = new Blob([configContent], { type: 'text/plain' });
                         const url = URL.createObjectURL(blob);
@@ -309,16 +309,16 @@ WHATSAPP_SESSION_PATH=./whatsapp-sessions
                         downloadLink.style.marginTop = '20px';
                         downloadLink.style.textAlign = 'center';
                         statusMessage.appendChild(downloadLink);
-                        
+
                         // Re-enable the install button
                         installBtn.disabled = false;
                     }
                 }
-                
+
                 // Start the process
                 processStep();
             }
-            
+
             // Function to generate a random string for JWT secret
             function generateRandomString(length) {
                 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
