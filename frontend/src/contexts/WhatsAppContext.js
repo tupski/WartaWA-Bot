@@ -118,31 +118,37 @@ export const WhatsAppProvider = ({ children }) => {
   // Poll for status updates when authenticated
   useEffect(() => {
     let statusInterval;
-    
+
     if (isAuthenticated) {
       // Initial status check
       getStatus().catch(console.error);
-      
+
       // Set up polling
       statusInterval = setInterval(() => {
+        // Get the current status
         getStatus().catch(console.error);
-        
-        // If status is 'qr_received', try to get QR code
-        if (status === 'qr_received') {
-          getQR().catch(console.error);
-        }
-        
-        // If status is 'ready', get message history
-        if (status === 'ready') {
-          getMessageHistory().catch(console.error);
-        }
       }, 5000);
     }
-    
+
     return () => {
       if (statusInterval) clearInterval(statusInterval);
     };
-  }, [isAuthenticated, status]);
+  }, [isAuthenticated]); // Only depend on isAuthenticated, not status
+
+  // Handle status changes
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    // If status is 'qr_received', try to get QR code
+    if (status === 'qr_received') {
+      getQR().catch(console.error);
+    }
+
+    // If status is 'ready', get message history
+    if (status === 'ready') {
+      getMessageHistory().catch(console.error);
+    }
+  }, [status, isAuthenticated]);
 
   // Context value
   const value = {
