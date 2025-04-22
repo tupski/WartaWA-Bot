@@ -121,8 +121,9 @@
                 <li>npm (usually comes with Node.js)</li>
                 <li>MySQL Server</li>
             </ul>
-            <div id="requirements-status"></div>
-            <button id="check-requirements">Check Requirements</button>
+            <div class="note" style="margin-top: 15px; padding: 10px; background-color: #fff3cd; color: #856404; border-radius: 4px;">
+                <p><strong>Note:</strong> This browser-based installer cannot automatically check if these requirements are met. Please verify manually before proceeding.</p>
+            </div>
         </div>
 
         <div class="step">
@@ -165,7 +166,7 @@
             </div>
         </div>
 
-        <button id="install-button">Install WhatsApp Bot</button>
+        <button id="install-button" type="button">Install WartaWA</button>
 
         <div class="progress">
             <div class="progress-bar">
@@ -179,27 +180,11 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const checkRequirementsBtn = document.getElementById('check-requirements');
             const installBtn = document.getElementById('install-button');
-            const requirementsStatus = document.getElementById('requirements-status');
             const statusMessage = document.getElementById('status-message');
             const progressSection = document.querySelector('.progress');
             const progressFill = document.getElementById('progress-fill');
             const progressStatus = document.getElementById('progress-status');
-
-            // Check requirements button click
-            checkRequirementsBtn.addEventListener('click', function() {
-                // This would normally check for Node.js, npm, and MySQL
-                // Since we can't do that directly in the browser, we'll simulate it
-                requirementsStatus.innerHTML = `
-                    <div style="margin-top: 15px; padding: 10px; background-color: #d4edda; color: #155724; border-radius: 4px;">
-                        <p><strong>✓ Node.js:</strong> v16.14.2</p>
-                        <p><strong>✓ npm:</strong> 8.5.0</p>
-                        <p><strong>✓ MySQL:</strong> 8.0.28</p>
-                        <p>All requirements are met! You can proceed with the installation.</p>
-                    </div>
-                `;
-            });
 
             // Install button click
             installBtn.addEventListener('click', function() {
@@ -276,7 +261,7 @@
 
                         // Create a download link for the configuration
                         const configContent = `
-# WhatsApp Bot Web Application Configuration
+# WartaWA Configuration
 # Generated on ${new Date().toLocaleString()}
 
 # Database Configuration
@@ -303,7 +288,7 @@ WHATSAPP_SESSION_PATH=./whatsapp-sessions
                         const url = URL.createObjectURL(blob);
                         const downloadLink = document.createElement('a');
                         downloadLink.href = url;
-                        downloadLink.download = 'wabot-config.txt';
+                        downloadLink.download = 'wartawa-config.txt';
                         downloadLink.textContent = 'Download Configuration';
                         downloadLink.style.display = 'block';
                         downloadLink.style.marginTop = '20px';
