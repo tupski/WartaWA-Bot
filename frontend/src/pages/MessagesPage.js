@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useWhatsApp } from '../contexts/WhatsAppContext';
-import { FaReply, FaInfoCircle } from 'react-icons/fa';
+import { FaReply, FaInfoCircle, FaPaperPlane } from 'react-icons/fa';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
+import '../styles/phoneInput.css';
 
 const MessagesPage = () => {
   const {
@@ -29,9 +32,11 @@ const MessagesPage = () => {
   const handleSendMessage = async (e) => {
     e.preventDefault();
 
+    // Get the raw phone number without formatting
+    const rawNumber = number.replace(/\D/g, '');
+
     // Validate phone number format
-    const phoneRegex = /^\d{10,15}$/;
-    if (!phoneRegex.test(number.replace(/\D/g, ''))) {
+    if (rawNumber.length < 10 || rawNumber.length > 15) {
       setSendError('Please enter a valid phone number (10-15 digits)');
       return;
     }
@@ -102,17 +107,26 @@ const MessagesPage = () => {
 
         <form onSubmit={handleSendMessage} className="space-y-4">
           <div>
-            <label htmlFor="number" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="number" className="block text-sm font-medium text-gray-700 mb-1">
               Phone Number
             </label>
-            <input
-              type="text"
-              id="number"
+            <PhoneInput
+              country={'id'} // Default to Indonesia (GMT+7)
               value={number}
-              onChange={(e) => setNumber(e.target.value)}
-              placeholder="e.g., 1234567890"
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              required
+              onChange={setNumber}
+              inputProps={{
+                id: 'number',
+                name: 'phone',
+                required: true,
+                className: 'w-full py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+              }}
+              containerClass="phone-input-container"
+              buttonClass="phone-input-button"
+              dropdownClass="phone-input-dropdown"
+              searchClass="phone-input-search"
+              enableSearch={true}
+              disableSearchIcon={false}
+              searchPlaceholder="Search country..."
             />
           </div>
 
@@ -138,7 +152,11 @@ const MessagesPage = () => {
               loading || status !== 'ready' ? 'bg-blue-300' : 'bg-blue-600 hover:bg-blue-700'
             } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
           >
-            {loading ? 'Sending...' : 'Send Message'}
+            {loading ? 'Sending...' : (
+              <>
+                <FaPaperPlane className="mr-2" /> Send Message
+              </>
+            )}
           </button>
         </form>
       </div>
