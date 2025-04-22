@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useWhatsApp } from '../contexts/WhatsAppContext';
+import { FaReply, FaInfoCircle } from 'react-icons/fa';
 
 const MessagesPage = () => {
-  const { messages, sendMessage, getMessageHistory, status, loading, error } = useWhatsApp();
+  const {
+    messages,
+    sendMessage,
+    replyToMessage,
+    getMessageHistory,
+    getNumberInfo,
+    status,
+    loading,
+    error,
+    formatTimestamp
+  } = useWhatsApp();
+
   const [number, setNumber] = useState('');
   const [messageText, setMessageText] = useState('');
   const [sendError, setSendError] = useState('');
+  const [replyingTo, setReplyingTo] = useState(null);
 
   useEffect(() => {
     // Get message history when component mounts
@@ -30,16 +43,38 @@ const MessagesPage = () => {
 
     try {
       setSendError('');
-      await sendMessage(number, messageText);
+
+      if (replyingTo) {
+        // Send as a reply
+        await replyToMessage(number, messageText, replyingTo.id);
+        setReplyingTo(null); // Clear reply state
+      } else {
+        // Send as a normal message
+        await sendMessage(number, messageText);
+      }
+
       setMessageText(''); // Clear message input after sending
     } catch (error) {
       setSendError(error.message || 'Failed to send message');
     }
   };
 
-  const formatTimestamp = (timestamp) => {
-    return new Date(timestamp).toLocaleString();
+  const handleReply = (msg) => {
+    setReplyingTo(msg);
+    setNumber(msg.direction === 'incoming' ? formatPhoneNumber(msg.from) : formatPhoneNumber(msg.to));
+    // Focus on the message input
+    document.getElementById('message').focus();
   };
+
+  const handleGetInfo = async (phoneNumber) => {
+    try {
+      await getNumberInfo(phoneNumber);
+    } catch (error) {
+      console.error('Failed to get number info:', error);
+    }
+  };
+
+  // Use the formatTimestamp from context instead
 
   const formatPhoneNumber = (phoneNumber) => {
     // Remove the @c.us suffix if present
@@ -146,7 +181,32 @@ const MessagesPage = () => {
                   </span>
                   <span>{formatTimestamp(msg.timestamp)}</span>
                 </div>
+
+                {replyingTo && replyingTo.id === msg.id && (
+                  <div className="bg-yellow-50 p-2 rounded mb-2 text-xs border-l-2 border-yellow-400">
+                    <p className="font-semibold">Replying to this message</p>
+                  </div>
+                )}
+
                 <p className="text-gray-800">{msg.body}</p>
+
+                <div className="flex mt-2 justify-end space-x-2">
+                  <button
+                    onClick={() => handleReply(msg)}
+                    className="text-gray-500 hover:text-blue-500 text-sm flex items-center"
+                    title="Reply to this message"
+                  >
+                    <FaReply className="mr-1" /> Reply
+                  </button>
+
+                  <button
+                    onClick={() => handleGetInfo(msg.direction === 'outgoing' ? msg.to : msg.from)}
+                    className="text-gray-500 hover:text-blue-500 text-sm flex items-center"
+                    title="Get contact info"
+                  >
+                    <FaInfoCircle className="mr-1" /> Info
+                  </button>
+                </div>
               </div>
             ))}
           </div>

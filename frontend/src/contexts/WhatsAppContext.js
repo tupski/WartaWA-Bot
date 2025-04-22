@@ -11,6 +11,9 @@ export const WhatsAppProvider = ({ children }) => {
   const [status, setStatus] = useState('disconnected');
   const [qrCode, setQrCode] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [groups, setGroups] = useState([]);
+  const [numberInfo, setNumberInfo] = useState(null);
+  const [settings, setSettings] = useState({ timezone: 'Asia/Jakarta' }); // Default to GMT+7
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -115,6 +118,100 @@ export const WhatsAppProvider = ({ children }) => {
     }
   }, []);
 
+  // Get number info
+  const getNumberInfo = useCallback(async (number) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await whatsappAPI.getNumberInfo(number);
+      setNumberInfo(response.data.data);
+      return response.data.data;
+    } catch (error) {
+      setError(error.response?.data?.message || 'Failed to get number info');
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Get groups
+  const getGroups = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await whatsappAPI.getGroups();
+      setGroups(response.data.data);
+      return response.data.data;
+    } catch (error) {
+      setError(error.response?.data?.message || 'Failed to get groups');
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Get group info
+  const getGroupInfo = useCallback(async (groupId) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await whatsappAPI.getGroupInfo(groupId);
+      return response.data.data;
+    } catch (error) {
+      setError(error.response?.data?.message || 'Failed to get group info');
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Get settings
+  const getAppSettings = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await whatsappAPI.getSettings();
+      setSettings(response.data.data);
+      return response.data.data;
+    } catch (error) {
+      setError(error.response?.data?.message || 'Failed to get settings');
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Update settings
+  const updateSettings = useCallback(async (newSettings) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await whatsappAPI.updateSettings(newSettings);
+      setSettings(response.data.data);
+      return response.data.data;
+    } catch (error) {
+      setError(error.response?.data?.message || 'Failed to update settings');
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Send message with reply
+  const replyToMessage = useCallback(async (number, message, quotedMessageId) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await whatsappAPI.sendMessage(number, message, quotedMessageId);
+      return response.data;
+    } catch (error) {
+      setError(error.response?.data?.message || 'Failed to send reply');
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   // Poll for status updates when authenticated
   useEffect(() => {
     let statusInterval;
@@ -133,7 +230,7 @@ export const WhatsAppProvider = ({ children }) => {
     return () => {
       if (statusInterval) clearInterval(statusInterval);
     };
-  }, [isAuthenticated]); // Only depend on isAuthenticated, not status
+  }, [isAuthenticated, getStatus]); // Include getStatus in dependencies
 
   // Handle status changes
   useEffect(() => {
@@ -148,13 +245,36 @@ export const WhatsAppProvider = ({ children }) => {
     if (status === 'ready') {
       getMessageHistory().catch(console.error);
     }
-  }, [status, isAuthenticated]);
+  }, [status, isAuthenticated, getQR, getMessageHistory]);
+
+  // Load settings when authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      getAppSettings().catch(console.error);
+      getGroups().catch(console.error);
+    }
+  }, [isAuthenticated, getAppSettings, getGroups]);
+
+  // Format timestamp with timezone
+  const formatTimestamp = useCallback((timestamp) => {
+    try {
+      return new Date(timestamp).toLocaleString('en-US', {
+        timeZone: settings.timezone || 'Asia/Jakarta',
+      });
+    } catch (error) {
+      console.error('Error formatting timestamp:', error);
+      return new Date(timestamp).toLocaleString();
+    }
+  }, [settings.timezone]);
 
   // Context value
   const value = {
     status,
     qrCode,
     messages,
+    groups,
+    numberInfo,
+    settings,
     loading,
     error,
     initialize,
@@ -163,6 +283,13 @@ export const WhatsAppProvider = ({ children }) => {
     sendMessage,
     getMessageHistory,
     reset,
+    getNumberInfo,
+    getGroups,
+    getGroupInfo,
+    getAppSettings,
+    updateSettings,
+    replyToMessage,
+    formatTimestamp,
   };
 
   return <WhatsAppContext.Provider value={value}>{children}</WhatsAppContext.Provider>;

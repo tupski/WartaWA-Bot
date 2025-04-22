@@ -26,7 +26,7 @@ const DashboardLayout = () => {
         } transition-all duration-300 ease-in-out`}
       >
         <div className="p-4 flex justify-between items-center">
-          <h1 className={`font-bold ${sidebarOpen ? 'block' : 'hidden'}`}>WhatsApp Bot</h1>
+          <h1 className={`font-bold ${sidebarOpen ? 'block' : 'hidden'}`}>WartaWA</h1>
           <button
             onClick={toggleSidebar}
             className="text-white focus:outline-none"

@@ -32,11 +32,16 @@ export const authAPI = {
 // WhatsApp API
 export const whatsappAPI = {
   initialize: () => apiClient.post('/whatsapp/initialize'),
-  sendMessage: (number, message) => apiClient.post('/whatsapp/send', { number, message }),
+  sendMessage: (number, message, quotedMessageId = null) => apiClient.post('/whatsapp/send', { number, message, quotedMessageId }),
   getStatus: () => apiClient.get('/whatsapp/status'),
   getQR: () => apiClient.get('/whatsapp/qr'),
   getHistory: () => apiClient.get('/whatsapp/history'),
   reset: () => apiClient.post('/whatsapp/reset'),
+  getNumberInfo: (number) => apiClient.get(`/whatsapp/number-info/${number}`),
+  getGroups: () => apiClient.get('/whatsapp/groups'),
+  getGroupInfo: (groupId) => apiClient.get(`/whatsapp/groups/${groupId}`),
+  getSettings: () => apiClient.get('/whatsapp/settings'),
+  updateSettings: (settings) => apiClient.post('/whatsapp/settings', settings),
 };
 
 export default apiClient;
