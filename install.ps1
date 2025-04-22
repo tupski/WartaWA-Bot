@@ -55,14 +55,31 @@ try {
 
 # Check for MySQL
 $mysqlInstalled = $false
+$mysqlPath = "mysql"
+
+# Check if MySQL is in the standard path
 try {
-    $mysqlVersion = mysql --version
+    $mysqlVersion = & $mysqlPath --version
     $mysqlInstalled = $true
     Write-Output "MySQL is installed: $mysqlVersion"
 } catch {
-    Write-ColorOutput Red "MySQL is not installed. Please install MySQL."
-    Write-Output "Download from: https://dev.mysql.com/downloads/installer/"
-    exit 1
+    # Check for MySQL in Ampps installation
+    $amppsPath = "C:\Program Files\Ampps\mysql\bin\mysql.exe"
+    if (Test-Path $amppsPath) {
+        try {
+            $mysqlVersion = & $amppsPath --version
+            $mysqlInstalled = $true
+            $mysqlPath = $amppsPath
+            Write-Output "MySQL is installed (Ampps): $mysqlVersion"
+        } catch {
+            Write-ColorOutput Red "MySQL is installed but could not be executed."
+            exit 1
+        }
+    } else {
+        Write-ColorOutput Red "MySQL is not installed. Please install MySQL."
+        Write-Output "Download from: https://dev.mysql.com/downloads/installer/"
+        exit 1
+    }
 }
 
 # All dependencies are installed
@@ -114,7 +131,15 @@ try {
     "CREATE DATABASE IF NOT EXISTS $dbName CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" | Out-File -FilePath $tempSqlFile -Encoding ASCII
 
     # Execute the SQL command
-    mysql -u $dbUser -p"$dbPasswordPlain" -h $dbHost -P $dbPort -e "source $tempSqlFile"
+    if ($mysqlPath -eq "mysql") {
+        # Standard MySQL installation
+        $mysqlCmd = "mysql -u `"$dbUser`" -p`"$dbPasswordPlain`" -h `"$dbHost`" -P $dbPort -e `"source $tempSqlFile`""
+        cmd.exe /c $mysqlCmd
+    } else {
+        # Custom MySQL path (e.g., Ampps)
+        $mysqlCmd = "& `"$mysqlPath`" -u `"$dbUser`" -p`"$dbPasswordPlain`" -h `"$dbHost`" -P $dbPort -e `"source $tempSqlFile`""
+        Invoke-Expression $mysqlCmd
+    }
 
     # Remove the temporary file
     Remove-Item $tempSqlFile
@@ -170,10 +195,16 @@ try {
     $schemaContent | Out-File -FilePath $tempSqlFile -Encoding ASCII
 
     # Execute MySQL with the schema file
-    $mysqlCmd = "mysql -u `"$dbUser`" -p`"$dbPasswordPlain`" -h `"$dbHost`" -P $dbPort `"$dbName`" < `"$tempSqlFile`""
-
-    # Use cmd.exe to execute the MySQL command with input redirection
-    cmd.exe /c $mysqlCmd
+    if ($mysqlPath -eq "mysql") {
+        # Standard MySQL installation
+        $mysqlCmd = "mysql -u `"$dbUser`" -p`"$dbPasswordPlain`" -h `"$dbHost`" -P $dbPort `"$dbName`" < `"$tempSqlFile`""
+        cmd.exe /c $mysqlCmd
+    } else {
+        # Custom MySQL path (e.g., Ampps)
+        # For custom paths, we need to use a different approach since PowerShell doesn't handle redirection well with custom paths
+        $mysqlImportCmd = "& `"$mysqlPath`" -u `"$dbUser`" -p`"$dbPasswordPlain`" -h `"$dbHost`" -P $dbPort `"$dbName`" -e `"source $($tempSqlFile.Replace('\', '/'))`""
+        Invoke-Expression $mysqlImportCmd
+    }
 
     # Remove the temporary file
     Remove-Item $tempSqlFile
