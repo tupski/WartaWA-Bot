@@ -25,7 +25,7 @@ This project is a WhatsApp bot web application that integrates a Node.js/Express
 - [Node.js](https://nodejs.org) - JavaScript runtime environment
 - [Express.js](https://expressjs.com) - Web application framework
 - [whatsapp-web.js](https://wwebjs.dev/) - WhatsApp Web API
-- [PostgreSQL](https://www.postgresql.org/) - Relational database
+- [MySQL](https://www.mysql.com/) - Relational database
 - [JWT](https://jwt.io/) - JSON Web Tokens for authentication
 
 ### Frontend
@@ -40,7 +40,7 @@ This project is a WhatsApp bot web application that integrates a Node.js/Express
 ## 📋 Prerequisites
 - Node.js (v14 or higher)
 - npm or yarn
-- PostgreSQL database
+- MySQL database
 
 ---
 
@@ -67,7 +67,7 @@ cp .env.example .env
 # Set up database credentials and JWT secret
 
 # Create database tables
-psql -U your_username -d your_database < src/db/schema.sql
+mysql -u your_username -p your_database < src/db/schema.sql
 
 # Start the backend server
 npm start

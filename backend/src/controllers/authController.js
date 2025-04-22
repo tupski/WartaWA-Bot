@@ -15,7 +15,7 @@ exports.login = async (req, res) => {
 
         // Check if user exists in database
         const result = await db.query(
-            'SELECT * FROM users WHERE email = $1',
+            'SELECT * FROM users WHERE email = ?',
             [email]
         );
 
@@ -79,7 +79,7 @@ exports.register = async (req, res) => {
 
         // Check if user already exists
         const userExists = await db.query(
-            'SELECT * FROM users WHERE email = $1',
+            'SELECT * FROM users WHERE email = ?',
             [email]
         );
 
@@ -93,11 +93,17 @@ exports.register = async (req, res) => {
         // For demo purposes, we're storing plain text passwords
         // In production, you should hash passwords with bcrypt
         const result = await db.query(
-            'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id, name, email',
+            'INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
             [name, email, password]
         );
 
-        const newUser = result.rows[0];
+        // Get the inserted user data
+        const userData = await db.query(
+            'SELECT id, name, email FROM users WHERE email = ?',
+            [email]
+        );
+
+        const newUser = userData.rows[0];
 
         // Create and assign a token
         const token = jwt.sign(
@@ -129,7 +135,7 @@ exports.getProfile = async (req, res) => {
         const userId = req.user.id;
 
         const result = await db.query(
-            'SELECT id, name, email FROM users WHERE id = $1',
+            'SELECT id, name, email FROM users WHERE id = ?',
             [userId]
         );
 
