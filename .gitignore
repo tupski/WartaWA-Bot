@@ -18,3 +18,10 @@ start-frontend.bat
 # Lock files
 backend/package-lock.json
 frontend/package-lock.json
+
+# WhatsApp session data
+backend/.wwebjs_cache/
+backend/whatsapp-sessions/
+whatsapp-sessions/
+.wwebjs_auth/
+.wwebjs_cache/
