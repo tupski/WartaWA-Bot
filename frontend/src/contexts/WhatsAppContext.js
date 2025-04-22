@@ -82,6 +82,7 @@ export const WhatsAppProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Get message history
