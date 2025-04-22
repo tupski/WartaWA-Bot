@@ -1,0 +1,28 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #333;
+    color: white;
+  }
+  
+  .profile-section {
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .profile-pic {
+    border-radius: 50%;
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    color: black;
+    border: 1px solid #ddd;
+    padding: 10px;
+  }
+  

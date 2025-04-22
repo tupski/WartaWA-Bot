@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-gray-100">
+
+  <!-- Wrapper -->
+  <div class="flex h-screen">
+
+    <!-- Sidebar -->
+    <aside class="bg-gray-800 text-white w-64 md:w-48 transition-all duration-200 ease-in-out"
+      id="sidebar">
+      <div class="p-4 text-xl font-bold border-b border-gray-700">Menu</div>
+      <nav class="mt-4">
+        <ul>
+          <li class="hover:bg-gray-700 cursor-pointer px-4 py-2">Dashboard</li>
+          <li class="hover:bg-gray-700 cursor-pointer px-4 py-2">Users</li>
+          <li class="hover:bg-gray-700 cursor-pointer px-4 py-2">Reports</li>
+          <li class="hover:bg-gray-700 cursor-pointer px-4 py-2">Settings</li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header -->
+      <header class="bg-white shadow-md p-4 flex justify-between items-center border-b border-gray-200">
+        <h1 class="text-lg font-semibold">Dashboard</h1>
+        <!-- Profile Dropdown -->
+        <div class="relative">
+          <button class="flex items-center space-x-2 text-gray-600 focus:outline-none" id="profile-btn">
+            <img class="w-8 h-8 rounded-full" src="https://i.pravatar.cc/150" alt="Profile">
+          </button>
+          <!-- Dropdown Menu -->
+          <div class="absolute right-0 mt-2 w-48 bg-white border shadow-md rounded-md hidden" id="dropdown">
+            <div class="py-2 px-4 text-gray-700 cursor-pointer hover:bg-gray-100">Logout</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content Area -->
+      <main class="p-6 bg-gray-50 flex-1 overflow-auto">
+        <div class="text-gray-700">
+          <p>Welcome to the Dashboard! Edit content here...</p>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
