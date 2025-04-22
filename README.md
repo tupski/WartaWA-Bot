@@ -51,8 +51,8 @@ WartaWA is a powerful WhatsApp messaging platform that integrates a Node.js/Expr
 #### Windows
 1. Download the repository or clone it:
    ```bash
-   git clone https://github.com/tupski/wabot-backend-node.git
-   cd wabot-backend-node
+   git clone https://github.com/tupski/WartaWA-Bot.git
+   cd WartaWA-Bot
    ```
 
 2. Run the installer by double-clicking `Install-WartaWA.bat`
@@ -71,8 +71,8 @@ WartaWA is a powerful WhatsApp messaging platform that integrates a Node.js/Expr
 #### Linux
 1. Clone the repository:
    ```bash
-   git clone https://github.com/tupski/wabot-backend-node.git
-   cd wabot-backend-node
+   git clone https://github.com/tupski/WartaWA-Bot.git
+   cd WartaWA-Bot
    ```
 
 2. Run the installer script:
@@ -97,8 +97,8 @@ WartaWA is a powerful WhatsApp messaging platform that integrates a Node.js/Expr
 
 #### 1. Clone the Repository
 ```bash
-git clone https://github.com/tupski/wabot-backend-node.git
-cd wabot-backend-node
+git clone https://github.com/tupski/WartaWA-Bot.git
+cd WartaWA-Bot
 ```
 
 #### 2. Backend Setup
