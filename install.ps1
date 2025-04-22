@@ -159,7 +159,25 @@ Write-ColorOutput Green "Environment configuration created successfully."
 Write-Output ""
 Write-ColorOutput Yellow "Importing database schema..."
 try {
-    mysql -u $dbUser -p"$dbPasswordPlain" -h $dbHost -P $dbPort $dbName < "backend/src/db/schema.sql"
+    # Get the full path to the schema file
+    $schemaPath = Resolve-Path "backend/src/db/schema.sql"
+
+    # Read the schema file content
+    $schemaContent = Get-Content -Path $schemaPath -Raw
+
+    # Create a temporary SQL file with the schema content
+    $tempSqlFile = [System.IO.Path]::GetTempFileName() + ".sql"
+    $schemaContent | Out-File -FilePath $tempSqlFile -Encoding ASCII
+
+    # Execute MySQL with the schema file
+    $mysqlCmd = "mysql -u `"$dbUser`" -p`"$dbPasswordPlain`" -h `"$dbHost`" -P $dbPort `"$dbName`" < `"$tempSqlFile`""
+
+    # Use cmd.exe to execute the MySQL command with input redirection
+    cmd.exe /c $mysqlCmd
+
+    # Remove the temporary file
+    Remove-Item $tempSqlFile
+
     Write-ColorOutput Green "Database schema imported successfully."
 } catch {
     Write-ColorOutput Red "Failed to import database schema: $_"
