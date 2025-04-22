@@ -10,23 +10,24 @@ const MessagesPage = () => {
   useEffect(() => {
     // Get message history when component mounts
     getMessageHistory().catch(console.error);
-  }, [getMessageHistory]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    
+
     // Validate phone number format
     const phoneRegex = /^\d{10,15}$/;
     if (!phoneRegex.test(number.replace(/\D/g, ''))) {
       setSendError('Please enter a valid phone number (10-15 digits)');
       return;
     }
-    
+
     if (!messageText) {
       setSendError('Please enter a message');
       return;
     }
-    
+
     try {
       setSendError('');
       await sendMessage(number, messageText);
@@ -49,7 +50,7 @@ const MessagesPage = () => {
     <div className="space-y-6">
       <div className="bg-white shadow rounded-lg p-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Send Message</h2>
-        
+
         {status !== 'ready' && (
           <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative mb-4" role="alert">
             <span className="block sm:inline">
@@ -57,13 +58,13 @@ const MessagesPage = () => {
             </span>
           </div>
         )}
-        
+
         {sendError && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
             <span className="block sm:inline">{sendError}</span>
           </div>
         )}
-        
+
         <form onSubmit={handleSendMessage} className="space-y-4">
           <div>
             <label htmlFor="number" className="block text-sm font-medium text-gray-700">
@@ -79,7 +80,7 @@ const MessagesPage = () => {
               required
             />
           </div>
-          
+
           <div>
             <label htmlFor="message" className="block text-sm font-medium text-gray-700">
               Message
@@ -94,7 +95,7 @@ const MessagesPage = () => {
               required
             />
           </div>
-          
+
           <button
             type="submit"
             disabled={loading || status !== 'ready'}
@@ -106,7 +107,7 @@ const MessagesPage = () => {
           </button>
         </form>
       </div>
-      
+
       <div className="bg-white shadow rounded-lg p-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold text-gray-800">Message History</h2>
@@ -117,13 +118,13 @@ const MessagesPage = () => {
             Refresh
           </button>
         </div>
-        
+
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
             <span className="block sm:inline">{error}</span>
           </div>
         )}
-        
+
         {messages.length === 0 ? (
           <p className="text-gray-500 text-center py-4">No messages yet</p>
         ) : (

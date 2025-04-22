@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
 import { whatsappAPI } from '../services/api';
 import { useAuth } from './AuthContext';
 
@@ -15,7 +15,7 @@ export const WhatsAppProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   // Initialize WhatsApp client
-  const initialize = async () => {
+  const initialize = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -28,10 +28,10 @@ export const WhatsAppProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Get WhatsApp status
-  const getStatus = async () => {
+  const getStatus = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -44,10 +44,10 @@ export const WhatsAppProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Get QR code
-  const getQR = async () => {
+  const getQR = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -62,10 +62,10 @@ export const WhatsAppProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Send message
-  const sendMessage = async (number, message) => {
+  const sendMessage = useCallback(async (number, message) => {
     try {
       setLoading(true);
       setError(null);
@@ -79,10 +79,10 @@ export const WhatsAppProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Get message history
-  const getMessageHistory = async () => {
+  const getMessageHistory = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -95,10 +95,10 @@ export const WhatsAppProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Reset WhatsApp client
-  const reset = async () => {
+  const reset = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -113,7 +113,7 @@ export const WhatsAppProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Poll for status updates when authenticated
   useEffect(() => {
