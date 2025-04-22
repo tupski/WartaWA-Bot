@@ -46,13 +46,62 @@ This project is a WhatsApp bot web application that integrates a Node.js/Express
 
 ## 🖥️ Installation & Setup
 
-### 1. Clone the Repository
+### Easy Installation (Recommended)
+
+#### Windows
+1. Download the repository or clone it:
+   ```bash
+   git clone https://github.com/tupski/wabot-backend-node.git
+   cd wabot-backend-node
+   ```
+
+2. Run the installer by double-clicking `Install-WhatsAppBot.bat`
+
+3. Choose your preferred installation method:
+   - **Option 1**: Command-line installer (PowerShell)
+   - **Option 2**: Graphical installer (Web browser)
+
+4. Follow the prompts to enter your MySQL database credentials and other configuration options
+
+5. After installation completes, use the generated start scripts:
+   - `start-all.bat` - Starts both backend and frontend servers
+   - `start-backend.bat` - Starts only the backend server
+   - `start-frontend.bat` - Starts only the frontend server
+
+#### Linux
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/tupski/wabot-backend-node.git
+   cd wabot-backend-node
+   ```
+
+2. Run the installer script:
+   ```bash
+   chmod +x install.sh
+   ./install.sh
+   ```
+
+3. Follow the prompts to enter your MySQL database credentials and other configuration options
+
+4. After installation completes, use the generated start scripts:
+   ```bash
+   # Start both backend and frontend
+   ./start-all.sh
+
+   # Or start them separately
+   ./start-backend.sh
+   ./start-frontend.sh
+   ```
+
+### Manual Installation
+
+#### 1. Clone the Repository
 ```bash
 git clone https://github.com/tupski/wabot-backend-node.git
 cd wabot-backend-node
 ```
 
-### 2. Backend Setup
+#### 2. Backend Setup
 ```bash
 # Navigate to backend directory
 cd backend
@@ -73,7 +122,7 @@ mysql -u your_username -p your_database < src/db/schema.sql
 npm start
 ```
 
-### 3. Frontend Setup
+#### 3. Frontend Setup
 ```bash
 # Navigate to frontend directory
 cd ../frontend
@@ -102,7 +151,7 @@ npm start
 
 ---
 
-## � WhatsApp Features
+## 📱 WhatsApp Features
 
 - **Send Messages**: Send text messages to any WhatsApp number
 - **Receive Messages**: View incoming messages in real-time
